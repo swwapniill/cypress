@@ -1,0 +1,41 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1713202931366,
+      "tag": "0000_stiff_morg",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1713203159504,
+      "tag": "0001_slimy_gambit",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1713203229630,
+      "tag": "0002_demonic_chat",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1713204038027,
+      "tag": "0003_many_tiger_shark",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1713204493347,
+      "tag": "0004_big_sprite",
+      "breakpoints": true
+    }
+  ]
+}
