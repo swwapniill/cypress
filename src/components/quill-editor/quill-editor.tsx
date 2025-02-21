@@ -1,4 +1,9 @@
 'use client';
+
+import type QuillNamespace from 'quill';
+import Quill from 'quill';
+import QuillCursors from 'quill-cursors';
+
 import { useAppState } from '@/lib/providers/state-provider';
 import { File, Folder, workspace } from '@/lib/supabase/supabase.types';
 import React, {
@@ -155,27 +160,39 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
   }, [state, pathname, workspaceId]);
 
 
-  const wrapperRef = useCallback(async (wrapper: any) => {
-    if (typeof window !== 'undefined') {
-      if (wrapper === null) return;
-      wrapper.innerHTML = '';
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const initializeQuill = async () => {
+      if (!wrapperRef.current) return;
+  
+      wrapperRef.current.innerHTML = '';
       const editor = document.createElement('div');
-      wrapper.append(editor);
-      const Quill = (await import('quill')).default;
-      const QuillCursors = (await import('quill-cursors')).default;
-      Quill.register('modules/cursors', QuillCursors);
+      wrapperRef.current.append(editor);
+  
+      const { default: Quill } = await import('quill');
+      const { default: QuillCursors } = await import('quill-cursors');
+  
+      if (!Quill.imports['modules/cursors']) {
+       ( Quill as unknown as typeof QuillNamespace).register('modules/cursors', QuillCursors as any);
+      }
+  
       const q = new Quill(editor, {
         theme: 'snow',
         modules: {
           toolbar: TOOLBAR_OPTIONS,
-          cursors: {
-            transformOnTextChange: true,
-          },
+          cursors: { transformOnTextChange: true },
         },
       });
+  
       setQuill(q);
-    }
+    };
+  
+    initializeQuill();
   }, []);
+  
+  return <div id="container" className="max-w-[800px]" ref={wrapperRef}></div>;
+  
 
   const restoreFileHandler = async () => {
     if (dirType === 'file') {
@@ -642,7 +659,9 @@ const QuillEditor: React.FC<QuillEditorProps> = ({
             src={
               supabase.storage
                 .from('file-banners')
-                .getPublicUrl(details.bannerUrl).data.publicUrl
+                //.getPublicUrl(details.bannerUrl).data.publicUrl
+                .getPublicUrl(details.bannerUrl ?? '').data.publicUrl
+
             }
             fill
             className="w-full md:h-48
